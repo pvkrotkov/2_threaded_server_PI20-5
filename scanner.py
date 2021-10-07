@@ -20,11 +20,11 @@ def printing():
     i = 0
     while i < 65535: # по очереди проходим все возмодные порты
         if i in scanned: 
-            i += 1
             if i in openned: #если просканирован, пишем о его состоянии
                 print(f"Порт {i} открыт")
             else:
                 print(f"Порт {i} закрыт")
+            i += 1
         else: # если нет -- ждем сканирования
             continue
 
