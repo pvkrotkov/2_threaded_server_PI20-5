@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import socket
 from threading import Thread
-from progress.bar import IncrementalBar
+from progress.bar import IncrementalBar # необходима сторонняя библиотека progress
 
 def scan(first, last): # сканируем порты
     for port in range(first,last): # по очереди
@@ -14,15 +14,15 @@ def scan(first, last): # сканируем порты
             continue
         finally:
             sock.close()
-            bar.next()
 
 
 def printing():
     i = 0
     while i < N: # по очереди проходим все возмодные порты
         if i in scanned:
+            bar.next()
             if i in openned: #если просканирован, пишем о его состоянии
-                print(f"Порт {i} открыт")
+                print(f"\nПорт {i} открыт")
             i += 1
         else: # если нет -- ждем сканирования
             continue
