@@ -1,20 +1,36 @@
 import socket
+from threading import Thread
+from progress.bar import IncrementalBar # необходима библиотека progress
 
-sock = socket.socket()
-sock.bind(('', 9090))
-sock.listen(0)
-conn, addr = sock.accept()
-print(addr)
+def scan(first, last): # сканируем порты
+    for port in range(first,last): # по очереди
+        sock = socket.socket() # сокет создаем
+        try:
+            scanned.append(port) # запоминаем, что мы просканировали порт
+            sock.connect(('127.0.0.1', port)) # попытка присоединиться
+            openned.append(port) # если получается, решаем, что он открыт
+        except:
+            continue
+        finally:
+            sock.close()
 
-msg = ''
 
-while True:
-	data = conn.recv(1024)
-	if not data:
-		break
-	msg += data.decode()
-	conn.send(data)
+def printing():
+    i = 0
+    while i < N: #проходим все возможные порты
+        if i in scanned:
+            bar.next()
+            if i in openned: #если просканирован, пишем о его состоянии
+                print(f"\nПорт {i} открыт")
+            i += 1
+        else: # если нет, то ждем сканирования
+            continue
 
-print(msg)
 
-conn.close()
+N = 2**16 - 1 # кол-во портов
+openned = [] # открытые порты
+scanned = [] #просканированые порты
+bar = IncrementalBar('Progress', max = N)
+for i in range(256): # создаем много потоков сканирования
+    Thread(target=scan, args=(i*int(N/257), (i+1)*int(N/257))).start()
+Thread(target=printing).start() # создаем один поток вывода
